@@ -1,0 +1,16 @@
+# Ignore log files
+*.log
+
+# Ignore OS generated files (macOS)
+.DS_Store
+
+# Ignore IDE/editor files (VSCode example)
+.vscode/
+
+# Ignore dependency directories (for Python)
+__pycache__/
+*.pyc
+
+# Ignore build directories
+/dist/
+/build/

@@ -1,16 +1,78 @@
 # Ignore log files
 *.log
 
-# Ignore OS generated files (macOS)
-.DS_Store
+# Ignore OS generated files
+.DS_Store  # macOS
+Thumbs.db  # Windows
 
-# Ignore IDE/editor files (VSCode example)
-.vscode/
+# Ignore IDE/editor files
+.vscode/        # VSCode settings
+.idea/          # JetBrains (CLion, PyCharm)
+*.swp           # Vim swap files
+*.swo           # Vim swap files
+*.bak           # Backup files
+*.~             # Backup files
 
 # Ignore dependency directories (for Python)
 __pycache__/
 *.pyc
 
 # Ignore build directories
-/dist/
 /build/
+dist/
+out/
+bin/
+obj/
+*.o             # Object files
+*.so            # Shared libraries
+*.a             # Static libraries
+*.dylib         # macOS shared libraries
+*.dll           # Windows DLLs
+*.exe           # Windows executables
+
+# Ignore CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+CTestTestfile.cmake
+
+# Ignore Python virtual environments
+venv/
+.venv/
+
+# Ignore CUDA and Libtorch related temp files
+*.pt            # PyTorch model files
+*.onnx          # ONNX exported models
+*.nv            # NVIDIA intermediate files
+*.fatbin        # CUDA binary files
+*.cubin         # CUDA compiled binaries
+*.ptx           # CUDA PTX files
+
+# Ignore temporary files from debugging
+*.dSYM/         # macOS debug symbols
+*.pdb           # Windows debug symbols
+*.ilk           # Incremental linker files
+*.ncb           # IntelliSense database
+*.sdf           # Visual Studio database
+*.opendb        # CLion/JetBrains database
+
+# Ignore generated documentation
+docs/doxygen/   # Doxygen output
+*.pdf
+*.md~
+
+# Ignore package management files
+node_modules/   # Node.js
+yarn.lock       # Yarn
+package-lock.json
+pip-log.txt     # Python pip logs
+
+# Ignore environment configuration files
+.env            # Environment variables
+.env.local
+.env.development
+.env.production
+.env.test
+

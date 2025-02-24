@@ -1,0 +1,5 @@
+Important compilation commands
+
+
+make -DCMAKE_PREFIX_PATH=/home/acerlaptop1/Desktop/dev/libtorch-cxx11-abi-shared-with-deps-2.6.0+cu118/libtorch
+cmake --build . --config Release

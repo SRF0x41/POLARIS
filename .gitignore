@@ -18,7 +18,6 @@ __pycache__/
 *.pyc
 
 # Ignore build directories
-/build/
 dist/
 out/
 bin/

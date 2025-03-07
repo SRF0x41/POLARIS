@@ -8,7 +8,12 @@ private:
     // Define the layers of the model
     torch::nn::Sequential layers;
 
+    // Declare static device (shared across all objects)
+    /* Set the device globaly, therefore this is a static object */
+    static torch::Device device;
+
 public:
+    /*** Constructors ***/
     AbsModel()
     {
     }
@@ -27,7 +32,10 @@ public:
         }
         // Register the layers as part of the model
         register_module("layers", layers);
+        this->to(device);
     }
+
+    /*** Functions ***/
 
     // The forward pass that defines how data flows through the model
     torch::Tensor forward(torch::Tensor x)
@@ -35,3 +43,7 @@ public:
         return layers->forward(x); // Pass the input through all layers
     }
 };
+
+// Initialises the device before any instance of the class is present
+// Define the static device variable
+torch::Device AbsModel::device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU);

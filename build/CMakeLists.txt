@@ -4,7 +4,7 @@ project(POLARIS)
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
-add_executable(POLARIS ../main.cpp ../AbsModel.cpp)
+add_executable(POLARIS ../main.cpp)
 target_link_libraries(POLARIS "${TORCH_LIBRARIES}")
 set_property(TARGET POLARIS PROPERTY CXX_STANDARD 17)
 

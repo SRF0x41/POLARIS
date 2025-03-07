@@ -1,6 +1,8 @@
 #include <torch/torch.h>
 #include <iostream>
 
+using namespace std;
+
 // torch::nn::Module inheretance for moving to GPU
 class AbsModel : public torch::nn::Module
 {
@@ -16,6 +18,7 @@ public:
     /*** Constructors ***/
     AbsModel()
     {
+        this->to(device);
     }
     // Constructor that takes a list of layer sizes (like an MLP)
     // Create an instance of AbsModel with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)
@@ -41,6 +44,12 @@ public:
     torch::Tensor forward(torch::Tensor x)
     {
         return layers->forward(x); // Pass the input through all layers
+    }
+
+
+    /** Getters **/
+    string deviceType(){
+        return (device.is_cuda() ? "CUDA" : "CPU");
     }
 };
 

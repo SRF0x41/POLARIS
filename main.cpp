@@ -2,13 +2,17 @@
 #include <iostream>
 #include "AbsModel.cpp" // Ensure that the AbsModel is properly included
 
+using namespace std;
+
 /*** Function Prototypes ***/
 // Eventualy make a header file?
 void usageExample();
 
 int main()
 {
-    
+    AbsModel model;
+    cout << "Running " << model.deviceType() << "\n";
+
 
     return 0;
 }

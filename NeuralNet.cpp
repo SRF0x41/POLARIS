@@ -4,7 +4,7 @@
 using namespace std;
 
 // torch::nn::Module inheretance for moving to GPU
-class AbsModel : public torch::nn::Module
+class NeuralNet : public torch::nn::Module
 {
 private:
     // Define the layers of the model
@@ -16,14 +16,14 @@ private:
 
 public:
     /*** Constructors ***/
-    AbsModel()
+    NeuralNet()
     {
         this->to(device);
     }
     // Constructor that takes a list of layer sizes (like an MLP)
     // Create an instance of AbsModel with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)
     // Could be multiple layers for example 4-layer MLP {10,20,30,5}s
-    AbsModel(std::vector<int64_t> layer_sizes)
+    NeuralNet(std::vector<int64_t> layer_sizes)
     {
         // Dynamically create layers based on layer_sizes
         for (size_t i = 0; i < layer_sizes.size() - 1; ++i)
@@ -46,13 +46,49 @@ public:
         return layers->forward(x); // Pass the input through all layers
     }
 
+    // Training
+    void trainModelExample(float learningRate)
+    {
+        // Example doesnt have any change in data
+        // Loss function (cross-entropy for classification)
+        auto loss_fn = torch::nn::CrossEntropyLoss();
+
+        // Optimizer (Stochastic Gradient Descent)
+        torch::optim::SGD optimizer(this->parameters(), torch::optim::SGDOptions(learningRate));
+
+        // Dummy data (for example purposes: batch size = 16, features = 10)
+        torch::Tensor inputs = torch::randn({16, 10}).to(device);
+        torch::Tensor targets = torch::randint(0, 2, {16}).to(device); // Random binary targets for classification
+
+        // Training loop
+        int64_t num_epochs = 5;
+        for (int epoch = 0; epoch < num_epochs; ++epoch)
+        {
+            this->train();         // Set model to training mode
+            optimizer.zero_grad(); // Zero gradients
+
+            // Forward pass
+            torch::Tensor output = this->forward(inputs);
+
+            // Calculate loss
+            torch::Tensor loss = loss_fn(output, targets);
+
+            // Backward pass and optimization
+            loss.backward();
+            optimizer.step();
+
+            // Print loss
+            std::cout << "Epoch [" << epoch + 1 << "/" << num_epochs << "] Loss: " << loss.item<float>() << std::endl;
+        }
+    }
 
     /** Getters **/
-    string deviceType(){
+    string deviceType()
+    {
         return (device.is_cuda() ? "CUDA" : "CPU");
     }
 };
 
 // Initialises the device before any instance of the class is present
 // Define the static device variable
-torch::Device AbsModel::device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU);
+torch::Device NeuralNet::device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU);

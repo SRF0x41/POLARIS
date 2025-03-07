@@ -1,6 +1,6 @@
 #include <torch/torch.h>
 #include <iostream>
-#include "AbsModel.cpp" // Ensure that the AbsModel is properly included
+#include "NeuralNet.cpp" // Ensure that the AbsModel is properly included
 
 using namespace std;
 
@@ -10,8 +10,13 @@ void usageExample();
 
 int main()
 {
-    AbsModel model;
+    // Create an instance of AbsModel with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)
+    NeuralNet model({10,50,2});
     cout << "Running " << model.deviceType() << "\n";
+
+    // Test training function
+    model.trainModel(0.01);
+
 
 
     return 0;
@@ -27,7 +32,7 @@ void usageExample(){
 
     // Create an instance of AbsModel with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)
     // Could be multiple layers for example 4-layer MLP {10,20,30,5}
-    AbsModel model({10, 50, 2}); // This line creates the model instance
+    NeuralNet model({10, 50, 2}); // This line creates the model instance
 
     // Move the model to the correct device (CPU or CUDA)
     model.to(device);

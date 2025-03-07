@@ -1,4 +1,4 @@
-#ifndef ABSMODEL_H
+/*#ifndef ABSMODEL_H
 #define ABSMODEL_H
 
 #include <torch/torch.h>

@@ -1,6 +1,7 @@
 #include <torch/torch.h>
 #include <iostream>
 #include "NeuralNet.cpp" // Ensure that the AbsModel is properly included
+#include "SockComm.cpp"
 
 using namespace std;
 
@@ -10,6 +11,9 @@ void usageExample();
 
 int main()
 {
+    SockComm sock_comm;
+
+    /*
     // Create an instance of NeuralNet with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)
     NeuralNet model({10, 50, 2});
     cout << "Running " << model.deviceType() << "\n";
@@ -29,6 +33,7 @@ int main()
 
     // Test training function
     model.trainModel(0.01, 5000, inputs, targets);
+    */
 
     return 0;
 }

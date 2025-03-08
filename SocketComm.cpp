@@ -23,7 +23,7 @@ public:
         // Define server details
         sockaddr_in server_addr{};
         server_addr.sin_family = AF_INET;
-        server_addr.sin_port = htons(12345);                 // Port must match the server
+        server_addr.sin_port = htons(12345);                  // Port must match the server
         server_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); // Localhost
 
         // Connect to the server
@@ -35,17 +35,23 @@ public:
         }
 
         std::cout << "Connected to the server!\n";
+    }
 
-        // Send a message to the server
-        const char *message = "Hello from C++ client!";
+    void sendMessage(char *message)
+    {
         send(client_socket, message, strlen(message), 0);
+    }
 
+    void receiveDataPrint()
+    {
         // Receive response from server
         char buffer[1024] = {0};
         recv(client_socket, buffer, sizeof(buffer), 0);
         std::cout << "Server response: " << buffer << std::endl;
+    }
 
-        // Close socket
+    void closeSocket()
+    {
         close(client_socket);
     }
 };

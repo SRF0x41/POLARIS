@@ -4,13 +4,13 @@
 #include <arpa/inet.h>  // For inet_addr, htons
 #include <unistd.h>     // For close()
 
-class SockComm
+class SocketComm
 {
 private:
     int client_socket;
 
 public:
-    SockComm()
+    SocketComm()
     {
         // Create a TCP socket
         client_socket = socket(AF_INET, SOCK_STREAM, 0);

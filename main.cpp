@@ -1,7 +1,7 @@
 #include <torch/torch.h>
 #include <iostream>
 #include "NeuralNet.cpp" // Ensure that the AbsModel is properly included
-#include "SockComm.cpp"
+#include "SocketComm.cpp"
 
 using namespace std;
 
@@ -11,7 +11,7 @@ void usageExample();
 
 int main()
 {
-    SockComm sock_comm;
+    SocketComm sock_comm;
 
     /*
     // Create an instance of NeuralNet with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)

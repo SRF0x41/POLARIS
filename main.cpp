@@ -14,6 +14,10 @@ int main()
 {
     SocketComm sock_comm;
 
+    if(sock_comm.createConnection()){
+        return 0;
+    }
+
     string input;
 
     // Continually ask for input until "exit" is entered
@@ -37,6 +41,8 @@ int main()
         sock_comm.sendMessage(data_arr);
 
         cout << "You entered: " << input << std::endl;
+
+        sock_comm.receiveDataPrint();
     }
 
     sock_comm.closeSocket();

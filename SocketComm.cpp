@@ -12,12 +12,16 @@ private:
 public:
     SocketComm()
     {
+        
+    }
+
+    int createConnection(){
         // Create a TCP socket
         client_socket = socket(AF_INET, SOCK_STREAM, 0);
         if (client_socket == -1)
         {
             std::cerr << "Error creating socket!\n";
-            return;
+            return -1;
         }
 
         // Define server details
@@ -31,10 +35,12 @@ public:
         {
             std::cerr << "Connection failed!\n";
             close(client_socket);
-            return;
+            return -1;
         }
 
         std::cout << "Connected to the server!\n";
+
+        return 0;
     }
 
     void sendMessage(char *message)

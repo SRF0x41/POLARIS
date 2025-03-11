@@ -47,6 +47,7 @@ int main()
         vector<char> output = sock_comm.recieveData();
 
         cout << output << "\n";
+        pJSON::parseJSON(output);
     }
 
     sock_comm.closeSocket();

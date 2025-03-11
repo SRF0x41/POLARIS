@@ -23,7 +23,7 @@ The project aims to build AI systems that can quickly adapt and optimize themsel
 To run this project, you will need the following:
 
 - C++17 or later (clang doesnt support)
-- Linux OS
+- UNIX type OS (Linux or MacOS)
 - [LibTorch](https://pytorch.org/cppdocs/) (The C++ distribution of PyTorch)
 - CMake (for building the project)
 - A compatible GPU with CUDA (optional, but recommended for faster training)
@@ -59,6 +59,19 @@ To run this project, you will need the following:
 
 Once the project is set up and compiled, you can use the neural network model to define, train, and evaluate a neural network.
 
+### Compilation Notes
+
+#### Using Clang (Default on macOS)
+If you are using Clang (Apple's default compiler), explicitly enable C++17 to support `std::variant` and other modern features:
+
+```bash
+g++ -std=c++17 pJSON.cpp -o pJSON
+```
+
+Otherwise use GCC17.
+```bash
+g++ pJSON.cpp -o pJSON
+```
 ### Example of Running the Model
 
 In the provided example, we create a model with 3 layers: an input layer, a hidden layer, and an output layer. The model is trained on random data for 5000 epochs.

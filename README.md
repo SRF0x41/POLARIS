@@ -22,7 +22,8 @@ The project aims to build AI systems that can quickly adapt and optimize themsel
 
 To run this project, you will need the following:
 
-- C++17 or later
+- C++17 or later (clang doesnt support)
+- Linux OS
 - [LibTorch](https://pytorch.org/cppdocs/) (The C++ distribution of PyTorch)
 - CMake (for building the project)
 - A compatible GPU with CUDA (optional, but recommended for faster training)
@@ -97,8 +98,12 @@ In the provided example, we create a model with 3 layers: an input layer, a hidd
 - **Model Architecture**: The very basic PyTorch inhereted class NeuralNet has been implemented. This removes a lot of manual tooling for ease of use, planning on creating more modularity with ease of use in mind.
 - **CUDA Integration**: GPU acceleration is supported.
 - **Training**: Initial tests with random data have been successful.
-- **Multimodal Capabilities**: Work is ongoing to enable handling multiple types of data simultaneously (e.g., images, text, and tabular data). Will develop the classes and tooling required to make this seamless.
+
 - **Documentation**: The documentation is being updated to include detailed instructions on model usage and customization.
+
+### Seconday Status
+
+- **JSON parse**: DIY JSON parser, I don't want to deal with another library.
 
 ### Planned Features
 

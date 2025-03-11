@@ -4,6 +4,9 @@
         "ostream": "cpp",
         "iostream": "cpp",
         "compare": "cpp",
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "iosfwd": "cpp",
+        "vector": "cpp",
+        "cstring": "cpp"
     }
 }

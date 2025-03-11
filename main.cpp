@@ -3,6 +3,8 @@
 #include "NeuralNet.cpp" // Ensure that the AbsModel is properly included
 #include "SocketComm.cpp"
 #include <string>
+#include <vector>
+#include "pJSON.cpp"
 
 using namespace std;
 
@@ -42,7 +44,9 @@ int main()
 
         cout << "You entered: " << input << std::endl;
 
-        sock_comm.receiveDataPrint();
+        vector<char> output = sock_comm.recieveData();
+
+        cout << output << "\n";
     }
 
     sock_comm.closeSocket();

@@ -3,6 +3,7 @@
 #include <sys/socket.h> // For socket functions
 #include <arpa/inet.h>  // For inet_addr, htons
 #include <unistd.h>     // For close()
+#include <vector>
 
 class SocketComm
 {
@@ -12,10 +13,10 @@ private:
 public:
     SocketComm()
     {
-        
     }
 
-    int createConnection(){
+    int createConnection()
+    {
         // Create a TCP socket
         client_socket = socket(AF_INET, SOCK_STREAM, 0);
         if (client_socket == -1)
@@ -54,6 +55,15 @@ public:
         char buffer[1024] = {0};
         recv(client_socket, buffer, sizeof(buffer), 0);
         std::cout << "Server response: " << buffer << std::endl;
+    }
+
+    vector<char> recieveData()
+    {
+        // I dont want to allocate memory at the end of this function so just return as a vec
+        vector<char> buffer(1024);
+        int bytes_recieved = recv(client_socket, buffer.data(), buffer.size(), 0);
+        buffer.resize(bytes_recieved);
+        return buffer;
     }
 
     void closeSocket()

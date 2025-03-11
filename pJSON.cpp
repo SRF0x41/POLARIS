@@ -11,13 +11,10 @@ class pJSON
 {
 private:
 public:
-    static map<string, jsonObj> parseJSON2(vector<char> message)
+    static void printOriginalMessage(vector<char> message)
     {
-        if (message.front() != '{' && message.back() != '}')
-            cerr << "Invalid json" << endl;
-
         cout << "Original message " << endl;
-        for (int i = 1; i < message.size() - 1; i++)
+        for (int i = 0; i < message.size(); i++)
         {
             if (message[i] == ' ' || message[i] == '\n' || message[i] == '\r')
             {
@@ -26,60 +23,6 @@ public:
             cout << message[i];
         }
         cout << "\n\n";
-
-        // keep reading untill the stack terminates
-        map<string, jsonObj> parsed_message;
-        vector<char> delim_stack; // valid terminators " " : ,
-
-        vector<vector<char>> main_vec;
-        vector<char> data;
-
-        for (int i = 1; i < message.size() - 1; i++)
-        {
-            if (message[i] == ' ' || message[i] == '\n' || message[i] == '\r')
-            {
-                continue;
-            }
-
-            // read key
-            if (message[i] == '"')
-            {
-                i++;
-                while (message[i] != '"')
-                {
-                    data.push_back(message[i]);
-                    i++;
-                }
-                i++;
-                parsed_message[string(data.begin(), data.end())] = "placeholder";
-
-                cout << "key " << string(data.begin(), data.end()) << endl;
-                main_vec.push_back(data);
-                data.clear();
-            }
-            cout << "inter json delim " << message[i] << endl;
-
-            // read value
-            if (message[i] == ':')
-            {
-                delim_stack.push_back(':');
-                i++;
-                while (!delim_stack.empty())
-                {
-                    if (delim_stack.back() == ':' && message[i] == ',') // end of read value
-                    {
-                        delim_stack.pop_back();
-                    }
-                    if (delim_stack.back() == '[' && message[i] == ']')
-                    {
-                        delim_stack.pop_back();
-                    }
-                }
-            }
-        }
-
-        // printMap(parsed_message);
-        return parsed_message;
     }
 
     static map<string, jsonObj> parseJSON3(vector<char> message)
@@ -87,26 +30,55 @@ public:
         if (message.front() != '{' && message.back() != '}')
             cerr << "Invalid json" << endl;
 
-        cout << "Original message " << endl;
+        printOriginalMessage(message);
+
+        map<string, jsonObj> parsedMessage;
+        string key;
+        jsonObj value;
+
+        bool key_read = false;
         for (int i = 1; i < message.size() - 1; i++)
         {
             if (message[i] == ' ' || message[i] == '\n' || message[i] == '\r')
             {
                 continue;
             }
-            cout << message[i];
-        }
-        cout << "\n\n";
 
-        for (int i = 1; i < message.size() - 1; i++)
-        {
-            if (message[i] == ' ' || message[i] == '\n' || message[i] == '\r')
+            if (message[i] == '"' && key_read == false) // start of read key
             {
-                continue;
+                key = parseString(message, i);
+                key_read = true;
+            }
+
+            if (key_read)
+            {
+                if (message[i] == '"') // start of read key
+                {
+                    string val = parseString(message, i);
+                    key_read = false;
+
+                    parsedMessage[key] = val;
+                }
             }
         }
 
+        return parsedMessage;
+    }
 
+    /* Key parser */
+    static string parseString(vector<char> message, int &i)
+    {
+
+        i++;
+        vector<char> data;
+        while (message[i] != '"')
+        {
+            data.push_back(message[i]);
+            i++;
+        }
+        i++;
+
+        return string(data.begin(), data.end());
     }
 
     static void printMap(map<string, jsonObj> parsedMessage)
@@ -177,7 +149,7 @@ int main()
     // Convert string to vector<char>
 
     vector<char> ssVector(ssJSON.begin(), ssJSON.end());
-    map<string, jsonObj> parsed_message = pJSON::parseJSON2(ssVector);
+    map<string, jsonObj> parsed_message = pJSON::parseJSON3(ssVector);
     cout << "print map" << endl;
     pJSON::printMap(parsed_message);
 

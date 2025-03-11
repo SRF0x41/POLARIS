@@ -116,7 +116,7 @@ In the provided example, we create a model with 3 layers: an input layer, a hidd
 
 ### Seconday Status
 
-- **JSON parse**: DIY JSON parser, I don't want to deal with another library.
+- **JSON parser**: DIY [JSON parser](pJSON.cpp) until I eventually decide to just use a library or build out to meet project needs.
 
 ### Planned Features
 

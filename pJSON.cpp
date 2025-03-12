@@ -7,32 +7,27 @@
 
 using namespace std;
 
-// Define a variant to hold string, vector of strings, integer, vector of integers, double, and vector of doubles
 using jsonObj = variant<string, vector<string>, int, vector<int>, double, vector<double>>;
 
 class pJSON
 {
-private:
 public:
-    // Function to print the original message (excluding whitespaces)
     static void printOriginalMessage(vector<char> message)
     {
         cout << "Original message " << endl;
-        for (int i = 0; i < message.size(); i++)
+        for (char c : message)
         {
-            if (message[i] == ' ' || message[i] == '\n' || message[i] == '\r')
+            if (c != ' ' && c != '\n' && c != '\r')
             {
-                continue;
+                cout << c;
             }
-            cout << message[i];
         }
         cout << "\n\n";
     }
 
-    // Function to parse the JSON message
     static map<string, jsonObj> parseJSON3(vector<char> message)
     {
-        if (message.front() != '{' && message.back() != '}')
+        if (message.front() != '{' || message.back() != '}')
         {
             cerr << "Invalid JSON" << endl;
         }
@@ -41,144 +36,125 @@ public:
 
         map<string, jsonObj> parsedMessage;
         string key;
-        jsonObj value;
-
         bool key_read = false;
-        for (int i = 1; i < message.size() - 1; i++) // Start from 1 and go till the second last character
+
+        for (int i = 1; i < message.size() - 1; i++)
         {
+            // Skip over spaces and escape codes
             if (message[i] == ' ' || message[i] == '\n' || message[i] == '\r')
             {
                 continue;
             }
 
-            if (message[i] == '"' && !key_read) // start of reading key
+            // Start of reading a key
+            if (message[i] == '"' && !key_read)
             {
                 key = parseString(message, i);
                 key_read = true;
             }
 
+            // Once the key is read, read the associated value
             if (key_read)
             {
-                if (message[i] == '"') // String values
+                if (message[i] == '"') // String value
                 {
-                    string val = parseString(message, i);
-                    parsedMessage[key] = val;
+                    parsedMessage[key] = parseString(message, i);
                     key_read = false;
                 }
-                else if (isdigit(message[i]) || message[i] == '-') // Numerical values
+                else if (isdigit(message[i]) || message[i] == '-') // numerical value
                 {
                     string num_str = parseNumerical(message, i);
-                    if (num_str.find('.') != string::npos) // If it contains a dot, it's a double
-                    {
-                        parsedMessage[key] = stod(num_str);
-                    }
-                    else
-                    {
-                        parsedMessage[key] = stoi(num_str);
-                    }
+                    parsedMessage[key] = (num_str.find('.') != string::npos) ? stod(num_str) : stoi(num_str);
                     key_read = false;
                 }
-                else if (message[i] == '[') // Start of an array
+                else if (message[i] == '[') // array value
                 {
-                    cout << "Character start of parse " << message[i] << endl;
-                    vector<jsonObj> num_arr = parseArray(message, i);
-                    for (jsonObj n : num_arr)
-                    {
-                        if (auto intPtr = std::get_if<int>(&value))
-                        {
-                            cout << *intPtr << endl;
-                        }
-                        // Check if it holds a double
-                        else if (auto doublePtr = std::get_if<double>(&value))
-                        {
-                            cout << *doublePtr << endl;
-                        }
-                    }
-                    // parsedMessage[key] = num_arr;
+                    jsonObj arrayValue = parseArray(message, i);
+                    parsedMessage[key] = arrayValue;
                     key_read = false;
                 }
             }
         }
-
         return parsedMessage;
     }
 
-    // Helper function to parse a string (key or value)
     static string parseString(vector<char> message, int &i)
     {
-        i++; // Skip the initial quote
+        i++;
         vector<char> data;
         while (message[i] != '"')
         {
-            data.push_back(message[i]);
-            i++;
+            data.push_back(message[i++]);
         }
-        i++; // Skip the closing quote
+        i++;
         return string(data.begin(), data.end());
     }
 
-    // Helper function to parse numerical values (integers and doubles)
     static string parseNumerical(vector<char> message, int &i)
     {
-
         vector<char> num;
         while (isdigit(message[i]) || message[i] == '.' || message[i] == '-')
         {
-            cout << "       parsingNumerical message at " << message[i] << endl;
-            num.push_back(message[i]);
-            i++;
+            num.push_back(message[i++]);
         }
         return string(num.begin(), num.end());
     }
 
-    // Helper function to parse arrays (ints, doubles of a single type)
-    static vector<jsonObj> parseArray(vector<char> message, int &i)
+    static jsonObj parseArray(vector<char> message, int &i)
     {
-        vector<jsonObj> num_arr;
-        while (message[i] != ']' && i < message.size())
+        vector<int> intArr;
+        vector<double> doubleArr;
+        bool isDouble = false;
+
+        while (message[i] != ']')
         {
-            
-            cout << "   char parse " << message[i] << endl;
-            if (isdigit(message[i]) || message[i] == '-') // Numerical values
+            i++;
+            if (isdigit(message[i]) || message[i] == '-')
             {
                 string num_str = parseNumerical(message, i);
-                if (num_str.find('.') != string::npos) // If it contains a dot, it's a double
+                if (num_str.find('.') != string::npos)
                 {
-                    double numerical = stod(num_str);
-                    num_arr.push_back(numerical);
+                    isDouble = true;
+                    doubleArr.push_back(stod(num_str));
                 }
                 else
                 {
-                    int numerical = stoi(num_str);
-                    num_arr.push_back(numerical);
+                    intArr.push_back(stoi(num_str));
                 }
             }
-            i++;
         }
-        cout << "   array parse terminator " << message[i] << endl;
-        return num_arr;
+        i++;
+        return isDouble ? jsonObj(doubleArr) : jsonObj(intArr);
     }
 
-    // Function to print the parsed map
-    static void printMap(map<string, jsonObj> parsedMessage)
+    static void printMap(const map<string, jsonObj> &parsedMessage)
     {
         for (const auto &[key, value] : parsedMessage)
         {
             cout << key << ": ";
-            // Check if the variant holds a string
-            if (auto strPtr = std::get_if<string>(&value))
+            if (auto strPtr = get_if<string>(&value))
             {
                 cout << *strPtr << endl;
             }
-            // Check if it holds an integer
-            else if (auto intPtr = std::get_if<int>(&value))
+            else if (auto intPtr = get_if<int>(&value))
             {
                 cout << *intPtr << endl;
             }
-            // Check if it holds a double
-            else if (auto doublePtr = std::get_if<double>(&value))
+            else if (auto doublePtr = get_if<double>(&value))
             {
                 cout << *doublePtr << endl;
+            }
+            else if (auto intVecPtr = get_if<vector<int>>(&value))
+            {
+                for (int num : *intVecPtr)
+                    cout << num << " ";
+                cout << endl;
+            }
+            else if (auto doubleVecPtr = get_if<vector<double>>(&value))
+            {
+                for (double num : *doubleVecPtr)
+                    cout << num << " ";
+                cout << endl;
             }
             else
             {
@@ -188,9 +164,10 @@ public:
     }
 };
 
+
+/*
 int main()
 {
-    // Sample JSON string
     string ssJSON = R"({
         "key1": "value1",
         "key4": "value4",
@@ -202,13 +179,12 @@ int main()
         "double_array": [1.1, 2.2, 3.3, 4.4, 5.5]
     })";
 
-    // Convert string to vector<char>
     vector<char> ssVector(ssJSON.begin(), ssJSON.end());
     map<string, jsonObj> parsed_message = pJSON::parseJSON3(ssVector);
 
-    // Print the parsed map
     cout << "Parsed JSON map:" << endl;
     pJSON::printMap(parsed_message);
 
     return 0;
 }
+*/

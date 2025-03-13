@@ -7,6 +7,7 @@
 #include "pJSON.cpp"
 
 using namespace std;
+using jsonObj = variant<string, vector<string>, int, vector<int>, double, vector<double>>;
 
 /*** Function Prototypes ***/
 // Eventualy make a header file?
@@ -47,7 +48,9 @@ int main()
         vector<char> output = sock_comm.recieveData();
 
         cout << output << "\n";
-        pJSON::parseJSON(output);
+        pJSON parser(output);
+
+        parser.printMessage();
     }
 
     sock_comm.closeSocket();

@@ -21,9 +21,35 @@ int main()
         return 0;
     }
 
-    string input;
+    while(true){
+        vector<char> recieved_data = sock_comm.recieveData();
+        pJSON json_parser(recieved_data);
+
+        jsonObj input_data = json_parser.getValue("data");
+
+        if(auto ptr = get_if<vector<int>>(&input_data)){
+            vector<int> extracted_data = *ptr;
+            cout << typeid(extracted_data).name() << endl;
+        }
+
+        
+
+        string test_send = R"({message:"hello from POLARIS"})";
+
+        sock_comm.sendMessage(test_send);
+
+       
+
+    }
+    return 0;
+
+
+
+    
 
     // Continually ask for input until "exit" is entered
+
+    /*
     while (true)
     {
         cout << "Enter something (type 'exit' to quit): ";
@@ -36,24 +62,21 @@ int main()
             break; // Break the loop if "exit" is entered
         }
 
-        // Serialize string to char*
-        size_t data_len = input.size() + 1;
-        char* data_arr = new char[data_len];
-        memcpy(data_arr, input.c_str(), data_len);
-
-        sock_comm.sendMessage(data_arr);
+        sock_comm.sendMessage(input);
 
         cout << "You entered: " << input << std::endl;
 
         vector<char> output = sock_comm.recieveData();
 
-        cout << output << "\n";
+        //cout << output << "\n";
         pJSON parser(output);
 
         parser.printMessage();
+        
     }
 
     sock_comm.closeSocket();
+    */
 
     /*
     // Create an instance of NeuralNet with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)
@@ -77,5 +100,4 @@ int main()
     model.trainModel(0.01, 5000, inputs, targets);
     */
 
-    return 0;
 }

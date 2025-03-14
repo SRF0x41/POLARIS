@@ -81,6 +81,28 @@ public:
         return (device.is_cuda() ? "CUDA" : "CPU");
     }
 
+    vector<double> normalizeData(vector<int> data)
+    {
+        /* formuala
+        x' = 2 * ((x-min(x))/(max - min ))-1
+        */
+
+        double max_val = *max_element(data.begin(), data.end());
+        double min_val = *min_element(data.begin(), data.end());
+
+        if(max_val == min_val){
+            return vector<double>(data.size(), 0.0);
+        }
+        
+        vector<double> norm_vec;
+        for (int n : data)
+        {
+            norm_vec.push_back(2.0*((static_cast<double>(n)-min_val)/(max_val - min_val)) - 1);
+        }
+
+        return norm_vec;
+    }
+
     /*** Examples ***/
     void trainModelExample(float learningRate)
     {

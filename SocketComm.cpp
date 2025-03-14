@@ -5,6 +5,7 @@
 #include <unistd.h>     // For close()
 #include <vector>
 
+
 class SocketComm
 {
 private:
@@ -47,6 +48,18 @@ public:
     void sendMessage(char *message)
     {
         send(client_socket, message, strlen(message), 0);
+    }
+
+    void sendMessage(string message)
+    {
+        // serialize string into char*
+        size_t data_len = message.size() + 1; // Include null terminator
+        ssize_t bytes_sent = send(client_socket, message.c_str(), data_len, 0);
+
+        if (bytes_sent == -1)
+        {
+            cerr << "Error sending message!" << endl;
+        }
     }
 
     void receiveDataPrint()

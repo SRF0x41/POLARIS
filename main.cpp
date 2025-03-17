@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 #include "pJSON.cpp"
+#include <typeinfo>
 
 using namespace std;
-using jsonObj = variant<string, vector<string>, int, vector<int>, double, vector<double>>;
 
 /*** Function Prototypes ***/
 // Eventualy make a header file?
@@ -17,35 +17,35 @@ int main()
 {
     SocketComm sock_comm;
 
-    if(sock_comm.createConnection()){
+    if (sock_comm.createConnection())
+    {
         return 0;
     }
+    NeuralNet net;
 
-    while(true){
+    while (true)
+    {
         vector<char> recieved_data = sock_comm.recieveData();
         pJSON json_parser(recieved_data);
 
-        jsonObj input_data = json_parser.getValue("data");
+        vector<int> extracted_data = json_parser.getValue("data");
 
-        if(auto ptr = get_if<vector<int>>(&input_data)){
-            vector<int> extracted_data = *ptr;
-            cout << typeid(extracted_data).name() << endl;
-        }
+        
+
+        vector<double> norm_data = net.normalizeData(extracted_data);
+        cout << extracted_data << endl;
+        cout << norm_data << endl;
 
         
 
         string test_send = R"({message:"hello from POLARIS"})";
 
         sock_comm.sendMessage(test_send);
-
-       
-
     }
     return 0;
 
 
 
-    
 
     // Continually ask for input until "exit" is entered
 
@@ -72,7 +72,7 @@ int main()
         pJSON parser(output);
 
         parser.printMessage();
-        
+
     }
 
     sock_comm.closeSocket();
@@ -99,5 +99,4 @@ int main()
     // Test training function
     model.trainModel(0.01, 5000, inputs, targets);
     */
-
 }

@@ -85,6 +85,19 @@ public:
         return json_obj_map[key];
     }
 
+    template <typename T>
+    T getValue(const string &key)
+    {
+        if (auto obj_ptr = get_if<T>(&json_obj_map[key]))
+        {
+            return *obj_ptr;
+        }
+        else
+        {
+            cerr << "Invalid key or type mismatch. Expected: " << typeid(T).name() << endl;
+            return T{}; // Return default empty object (e.g., empty vector, empty string)
+        }
+    }
     void printOriginalMessage(vector<char> message)
     {
         cout << "Original message " << endl;

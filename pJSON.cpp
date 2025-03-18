@@ -85,19 +85,84 @@ public:
         return json_obj_map[key];
     }
 
-    template <typename T>
-    T getValue(const string &key)
+    vector<double> getDoubleVector(string key)
     {
-        if (auto obj_ptr = get_if<T>(&json_obj_map[key]))
+        if (auto obj_ptr = get_if<vector<double>>(&json_obj_map[key]))
         {
             return *obj_ptr;
         }
         else
         {
-            cerr << "Invalid key or type mismatch. Expected: " << typeid(T).name() << endl;
-            return T{}; // Return default empty object (e.g., empty vector, empty string)
+            cerr << "Invalid key or type mismatch. Expected vector<double>, but got different type.\n";
+            return {};
         }
     }
+
+    vector<int> getIntVector(string key)
+    {
+        if (auto obj_ptr = get_if<vector<int>>(&json_obj_map[key]))
+        {
+            return *obj_ptr;
+        }
+        else
+        {
+            cerr << "Invalid key or type mismatch. Expected vector<int>, but got different type.\n";
+            return {};
+        }
+    }
+
+    int getInt(string key)
+    {
+        if (auto obj_ptr = get_if<int>(&json_obj_map[key]))
+        {
+            return *obj_ptr;
+        }
+        else
+        {
+            cerr << "Invalid key or type mismatch. Expected int, but got different type.\n";
+            return 0;
+        }
+    }
+
+    double getDouble(string key)
+    {
+        if (auto obj_ptr = get_if<double>(&json_obj_map[key]))
+        {
+            return *obj_ptr;
+        }
+        else
+        {
+            cerr << "Invalid key or type mismatch. Expected double, but got different type.\n";
+            return 0.0;
+        }
+    }
+
+    string getString(string key)
+    {
+        if (auto obj_ptr = get_if<string>(&json_obj_map[key]))
+        {
+            return *obj_ptr;
+        }
+        else
+        {
+            cerr << "Invalid key or type mismatch. Expected string, but got different type.\n";
+            return "";
+        }
+    }
+
+    vector<string> getStringVector(string key)
+    {
+        if (auto obj_ptr = get_if<vector<string>>(&json_obj_map[key]))
+        {
+            return *obj_ptr;
+        }
+        else
+        {
+            cerr << "Invalid key or type mismatch. Expected vector<string>, but got different type.\n";
+            return {};
+        }
+    }
+
     void printOriginalMessage(vector<char> message)
     {
         cout << "Original message " << endl;
@@ -183,29 +248,30 @@ public:
         for (const auto &[key, value] : this->json_obj_map)
         {
             cout << key << ": ";
+
             if (auto strPtr = get_if<string>(&value))
             {
-                cout << *strPtr << endl;
+                cout << *strPtr << " " << typeid(*strPtr).name() << endl;
             }
             else if (auto intPtr = get_if<int>(&value))
             {
-                cout << *intPtr << endl;
+                cout << *intPtr << " " << typeid(*intPtr).name() << endl;
             }
             else if (auto doublePtr = get_if<double>(&value))
             {
-                cout << *doublePtr << endl;
+                cout << *doublePtr << " " << typeid(*doublePtr).name() << endl;
             }
             else if (auto intVecPtr = get_if<vector<int>>(&value))
             {
                 for (int num : *intVecPtr)
                     cout << num << " ";
-                cout << endl;
+                cout << " " << typeid(*intVecPtr).name() << endl;
             }
             else if (auto doubleVecPtr = get_if<vector<double>>(&value))
             {
                 for (double num : *doubleVecPtr)
                     cout << num << " ";
-                cout << endl;
+                cout << " " << typeid(*doubleVecPtr).name() << endl;
             }
             else
             {

@@ -21,6 +21,9 @@ public:
     }
 
     // Constructor that takes a list of layer sizes (like an MLP)
+    // Create an instance of NeuralNet with a 3-layer MLP (Input: 10, Hidden: 50, Output: 2)
+    // NeuralNet model({10, 50, 2});
+
     NeuralNet(std::vector<int64_t> layer_sizes)
     {
         // Dynamically create layers based on layer_sizes
@@ -34,10 +37,36 @@ public:
         this->to(device);
     }
 
+    /* Getters */
+    int getOutputSize()
+    {
+        // Get the last layer
+        auto last_layer = layers->module_list().back();
+
+        if (auto linear = dynamic_cast<torch::nn::Linear *>(last_layer.get()))
+        {
+            return linear->out_features; // Return the number of output neurons
+        }
+        return -1; // Return -1 if the last layer is not Linear
+    }
+
+    int getInputSize()
+    {
+        // Get the first layer
+        auto first_layer = layers->module_list()[0];
+
+        if (auto linear = dynamic_cast<torch::nn::Linear *>(first_layer.get()))
+        {
+            return linear->in_features; // Return the number of input features
+        }
+        return -1;
+    }
+
     /*** Functions ***/
     // The forward pass that defines how data flows through the model
     torch::Tensor forward(torch::Tensor x)
     {
+        x = x.to(device);
         return layers->forward(x); // Pass the input through all layers
     }
 
@@ -90,14 +119,15 @@ public:
         double max_val = *max_element(data.begin(), data.end());
         double min_val = *min_element(data.begin(), data.end());
 
-        if(max_val == min_val){
+        if (max_val == min_val)
+        {
             return vector<double>(data.size(), 0.0);
         }
-        
+
         vector<double> norm_vec;
         for (int n : data)
         {
-            norm_vec.push_back(2.0*((static_cast<double>(n)-min_val)/(max_val - min_val)) - 1);
+            norm_vec.push_back(2.0 * ((static_cast<double>(n) - min_val) / (max_val - min_val)) - 1);
         }
 
         return norm_vec;
